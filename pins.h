@@ -1,0 +1,3 @@
+#define MOVEMENT_PIN PB7
+#define DHT_PIN PD0
+#define LIGHT_PIN PC1

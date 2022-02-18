@@ -6,7 +6,19 @@
 #include <ArduinoJson.h>
 #include <cstdint>
 #include "art.h"
+#include "pins.h"
+// #include <TroykaDHT.h>
+#include <DHT.h>
 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+#define SCREEN_ADDRESS 0x3d ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
 // #define DEBUG Serial3
 
@@ -17,7 +29,11 @@
 
 
 #define VARS \
-    X(int, pot)
+    X(int, pot) \
+    X(bool, motion) \
+    X(float, temperature) \
+    X(float, humidity) \
+    X(int, lighting)
 
 #define X(type, name) type name;
 typedef struct{
@@ -99,18 +115,7 @@ void sender(bool sendAll = false){
 
 
 
-void setup() {   
-    Serial.begin(115200);
-    // DEBUG.begin(115200);
 
-	// pinMode(PC13, OUTPUT);
-    // pinMode(PA1, INPUT);
-    pinMode(PA0, INPUT);
-
-    // DEBUG.println(art);
-    // DEBUG.println("(c) 2022 GOATSE.CX Sytems");
-    // DEBUG.println("GOATSE: boot successful");
-}
 
 
 
@@ -156,13 +161,57 @@ void serialEvent() {
     
 } 
 
+DHT dht(DHT_PIN, DHT11);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
+void setup() {   
+    Serial.begin(115200);
+    // User code here
+
+    pinMode(PA0, INPUT);
+    pinMode(MOVEMENT_PIN, INPUT);
+    dht.begin();
+    pinMode(LIGHT_PIN, INPUT);
+
+    Wire.setSDA(PB9);
+    Wire.setSCL(PB8);
+    Wire.begin();
+
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3c);
+    display.clearDisplay();
+    display.display();
+
+
+}
 
 void loop() {
     sender();
-    // int pot = analogRead(PA1);
-    // if(abs(pot - state.pot) > 3)state.pot = pot;
+    // User code here
+
     state.pot = digitalRead(PA0);
-    // digitalWrite(PC13, !state.led);
-    // state.test++;
+
+    // motion
+    state.motion = digitalRead(MOVEMENT_PIN);
+
+    // dht
+    state.humidity = dht.readHumidity();
+    state.temperature = dht.readTemperature();
+
+    // light
+    state.lighting = 1024 - analogRead(LIGHT_PIN);
+
+
+    // display
+    display.clearDisplay();
+
+    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.cp437(true);
+    display.print("Temp: ");
+    display.print(state.temperature);
+    display.println(" c");
+    display.display();
+    // TODO: target temp
+
 }
