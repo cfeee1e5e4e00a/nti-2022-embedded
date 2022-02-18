@@ -1,0 +1,2 @@
+save_path_color = 'data/color_faces/'
+save_path_gray = 'data/gray_faces/'
