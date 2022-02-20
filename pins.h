@@ -1,3 +1,24 @@
 #define MOVEMENT_PIN PB7
 #define DHT_PIN PD0
 #define LIGHT_PIN PC1
+
+#define SCALE_DATA PE7
+#define SCALE_CLOCK PE8
+
+#define RFID_IRQ PC6
+#define RFID_CLK PA8
+#define RFID_DATA PC9
+
+#define CURRENT_PIN PA1
+#define HEATER_PIN PE15
+
+#define COOLER_PIN PE6
+
+#define FACE_BTN_PIN PE4
+#define DISP_BTN_PIN PE2
+
+// #define DOOR_PIN PD13
+// #define WINDOW_PIN PD15
+
+#define DOOR_PIN PE11
+#define WINDOW_PIN PE13
