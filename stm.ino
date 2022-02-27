@@ -5,7 +5,7 @@
 
 #include <ArduinoJson.h>
 #include <cstdint>
-#include "art.h"
+// #include "art.h"
 #include "pins.h"
 // #include <TroykaDHT.h>
 #include <DHT.h>
